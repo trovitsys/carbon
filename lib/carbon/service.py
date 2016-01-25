@@ -212,8 +212,8 @@ def setupRelayProcessor(root_service, settings):
   for destination in util.parseDestinations(settings.DESTINATIONS):
     state.client_manager.startClient(destination)
 
-  for destination in util.parseDestinations(settings.AGG_BYPASS_DESTINATIONS, 'bypass'):
-    state.client_manager.startClient(destination)
+  for destination in util.parseDestinations(settings.AGG_BYPASS_DESTINATIONS):
+    state.client_manager.startClient(destination, agg_bypass=True)
 
 
 def setupWriterProcessor(root_service, settings):

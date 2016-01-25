@@ -99,20 +99,20 @@ class ConsistentHashingRouter(DatapointRouter):
 class AggregatedConsistentHashingRouter(DatapointRouter):
   def __init__(self, agg_rules_manager, replication_factor=1, diverse_replicas=True):
     self.bypass_hash_router = ConsistentHashingRouter(replication_factor, diverse_replicas=diverse_replicas)
+    self.bypass_destinations = set()
     self.aggregator_hash_router = ConsistentHashingRouter(replication_factor, diverse_replicas=diverse_replicas)
     self.agg_rules_manager = agg_rules_manager
 
-  def addDestination(self, destination):
-    type = destination[3]
+  def addDestination(self, destination, agg_bypass=False):
     # if it's an aggregator bypass destination, add it to bypass router
-    if type == 'bypass':
+    if agg_bypass:
       self.bypass_hash_router.addDestination(destination)
+      self.bypass_destinations.add(destination)
     else:
       self.aggregator_hash_router.addDestination(destination)
 
   def removeDestination(self, destination):
-    type = destination[3]
-    if type == 'bypass':
+    if destination in self.bypass_destinations:
       self.bypass_hash_router.removeDestination(destination)
     else:
       self.aggregator_hash_router.removeDestination(destination)

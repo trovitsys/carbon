@@ -96,7 +96,7 @@ def run_twistd_plugin(filename):
     runApp(config)
 
 
-def parseDestinations(destination_strings, type=None):
+def parseDestinations(destination_strings):
   destinations = []
 
   for dest_string in destination_strings:
@@ -109,7 +109,7 @@ def parseDestinations(destination_strings, type=None):
     else:
       raise ValueError("Invalid destination string \"%s\"" % dest_string)
 
-    destinations.append( (server, int(port), instance, type) )
+    destinations.append( (server, int(port), instance) )
 
   return destinations
 
