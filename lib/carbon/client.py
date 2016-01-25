@@ -352,7 +352,7 @@ class CarbonClientManager(Service):
       return
 
     log.clients("connecting to carbon daemon at %s:%d:%s" % destination)
-    if router.__class__.__name__ == 'AggregatedConsistentHashingRouter':
+    if self.router.__class__.__name__ == 'AggregatedConsistentHashingRouter':
       self.router.addDestination(destination, agg_bypass)
     else:
       self.router.addDestination(destination)
