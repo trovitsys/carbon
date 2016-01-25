@@ -133,9 +133,9 @@ class AggregatedConsistentHashingRouter(DatapointRouter):
       resolved_metrics.append(key)
       # use bypass router if there is some bypass destination
       if len(self.bypass_hash_router.instance_ports) > 0:
-        hash_router = bypass_hash_router
+        hash_router = self.bypass_hash_router
       else:
-        hash_router = aggregator_hash_router
+        hash_router = self.aggregator_hash_router
 
     # get consistent hashing destinations based on aggregate forms
     destinations = set()
