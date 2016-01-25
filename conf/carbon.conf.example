@@ -106,7 +106,7 @@ CACHE_QUERY_PORT = 7002
 USE_FLOW_CONTROL = True
 
 # If enabled this setting is used to timeout metric client connection if no
-# metrics have been sent in specified time in seconds 
+# metrics have been sent in specified time in seconds
 #METRIC_CLIENT_IDLE_TIMEOUT = None
 
 # By default, carbon-cache will log every whisper update and cache hit.
@@ -257,7 +257,7 @@ REPLICATION_FACTOR = 1
 
 # For REPLICATION_FACTOR >=2, set DIVERSE_REPLICAS to True to guarantee replicas
 # across distributed hosts. With this setting disabled, it's possible that replicas
-# may be sent to different caches on the same host. This has been the default 
+# may be sent to different caches on the same host. This has been the default
 # behavior since introduction of 'consistent-hashing' relay method.
 # Note that enabling this on an existing pre-0.9.14 cluster will require rebalancing
 # your metrics across the cluster nodes using a tool like Carbonate.
@@ -280,6 +280,14 @@ REPLICATION_FACTOR = 1
 # If using RELAY_METHOD = rules, all destinations used in relay-rules.conf
 # must be defined in this list
 DESTINATIONS = 127.0.0.1:2004
+
+# For RELAY_METHOD = aggregated-consistent-hashing, you can use an optional list
+# of AGG_BYPASS_DESTINATIONS that will be used when the metric didn't match any
+# aggregation rule, bypassing the original DESTINATIONS list. This way you can
+# save resources by sending metrics that don't need aggregation to destinations
+# different than the aggregator instances listed in DESTINATIONS, usually the
+# same final destinations used by the aggregators.
+#AGG_BYPASS_DESTINATIONS = 127.0.0.1:2004:cache00, 127.0.0.1:2104:cache01
 
 # This is the maximum number of datapoints that can be queued up
 # for a single destination. Once this limit is hit, we will
@@ -314,7 +322,7 @@ TIME_TO_DEFER_SENDING = 0.0001
 USE_FLOW_CONTROL = True
 
 # If enabled this setting is used to timeout metric client connection if no
-# metrics have been sent in specified time in seconds 
+# metrics have been sent in specified time in seconds
 #METRIC_CLIENT_IDLE_TIMEOUT = None
 
 # Set this to True to enable whitelisting and blacklisting of metrics in
@@ -412,7 +420,7 @@ MAX_QUEUE_SIZE = 10000
 USE_FLOW_CONTROL = True
 
 # If enabled this setting is used to timeout metric client connection if no
-# metrics have been sent in specified time in seconds 
+# metrics have been sent in specified time in seconds
 #METRIC_CLIENT_IDLE_TIMEOUT = None
 
 # This defines the maximum "message size" between carbon daemons.

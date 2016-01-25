@@ -98,14 +98,24 @@ class ConsistentHashingRouter(DatapointRouter):
 
 class AggregatedConsistentHashingRouter(DatapointRouter):
   def __init__(self, agg_rules_manager, replication_factor=1, diverse_replicas=True):
-    self.hash_router = ConsistentHashingRouter(replication_factor, diverse_replicas=diverse_replicas)
+    self.bypass_hash_router = ConsistentHashingRouter(replication_factor, diverse_replicas=diverse_replicas)
+    self.aggregator_hash_router = ConsistentHashingRouter(replication_factor, diverse_replicas=diverse_replicas)
     self.agg_rules_manager = agg_rules_manager
 
   def addDestination(self, destination):
-    self.hash_router.addDestination(destination)
+    type = destination[3]
+    # if it's an aggregator bypass destination, add it to bypass router
+    if type == 'bypass':
+      self.bypass_hash_router.addDestination(destination)
+    else:
+      self.aggregator_hash_router.addDestination(destination)
 
   def removeDestination(self, destination):
-    self.hash_router.removeDestination(destination)
+    type = destination[3]
+    if type == 'bypass':
+      self.bypass_hash_router.removeDestination(destination)
+    else:
+      self.aggregator_hash_router.removeDestination(destination)
 
   def getDestinations(self, key):
     # resolve metric to aggregate forms
@@ -121,11 +131,16 @@ class AggregatedConsistentHashingRouter(DatapointRouter):
     # (will pass through aggregation)
     if len(resolved_metrics) == 0:
       resolved_metrics.append(key)
+      # use bypass router if there is some bypass destination
+      if len(self.bypass_hash_router.instance_ports) > 0:
+        hash_router = bypass_hash_router
+      else:
+        hash_router = aggregator_hash_router
 
     # get consistent hashing destinations based on aggregate forms
     destinations = set()
     for resolved_metric in resolved_metrics:
-      for destination in self.hash_router.getDestinations(resolved_metric):
+      for destination in hash_router.getDestinations(resolved_metric):
         destinations.add(destination)
 
     for destination in destinations:

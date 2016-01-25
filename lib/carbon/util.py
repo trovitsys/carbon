@@ -96,7 +96,7 @@ def run_twistd_plugin(filename):
     runApp(config)
 
 
-def parseDestinations(destination_strings):
+def parseDestinations(destination_strings, type=None):
   destinations = []
 
   for dest_string in destination_strings:
@@ -109,7 +109,7 @@ def parseDestinations(destination_strings):
     else:
       raise ValueError("Invalid destination string \"%s\"" % dest_string)
 
-    destinations.append( (server, int(port), instance) )
+    destinations.append( (server, int(port), instance, type) )
 
   return destinations
 
@@ -157,11 +157,11 @@ else:
       if not name in self.PICKLE_SAFE[module]:
         raise pickle.UnpicklingError('Attempting to unpickle unsafe class %s' % name)
       return getattr(mod, name)
- 
+
     @classmethod
     def loads(cls, pickle_string):
       return cls(StringIO(pickle_string)).load()
- 
+
 
 def get_unpickler(insecure=False):
   if insecure:
