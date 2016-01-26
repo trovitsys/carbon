@@ -136,6 +136,8 @@ class AggregatedConsistentHashingRouter(DatapointRouter):
         hash_router = self.bypass_hash_router
       else:
         hash_router = self.aggregator_hash_router
+    else:
+      hash_router = self.aggregator_hash_router
 
     # get consistent hashing destinations based on aggregate forms
     destinations = set()
